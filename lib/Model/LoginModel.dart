@@ -2,13 +2,18 @@ class LoginResponse {
   LoginResponse({
     required this.status,
     required this.message,
+    required this.userDetails,
   });
   late final String status;
   late final String message;
+  late final List<UserDetails> userDetails;
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
+    userDetails = List.from(json['user_details'])
+        .map((e) => UserDetails.fromJson(e))
+        .toList();
   }
   LoginResponse.fromError(Map<String, dynamic> json) {
     status = json['status'];
@@ -18,7 +23,7 @@ class LoginResponse {
     final _data = <String, dynamic>{};
     _data['status'] = status;
     _data['message'] = message;
-
+    _data['user_details'] = userDetails.map((e) => e.toJson()).toList();
     return _data;
   }
 }
@@ -27,101 +32,67 @@ class UserDetails {
   UserDetails({
     required this.id,
     required this.name,
-    required this.firstName,
-    required this.lastName,
-    required this.companyName,
-    this.avtar,
-    required this.coverImage,
-    required this.website,
     required this.email,
-    required this.phone,
+    this.emailVerifiedAt,
+    required this.role,
+    required this.city,
     required this.address,
-    required this.msgEmail,
-    required this.socialSiteLinks,
-    required this.emailVerifiedAt,
+    required this.mobile,
+    required this.phone,
+    this.avatar,
+    required this.gender,
+    required this.dob,
     required this.createdAt,
     required this.updatedAt,
-    required this.isVerify,
-    required this.package,
-    required this.subscriptionStatus,
-    required this.isActive,
-    this.imagePath,
   });
   late final int id;
-  late final String? name;
-  late final String firstName;
-  late final String lastName;
-  late final String companyName;
-  late final String? avtar;
-  late final String coverImage;
-  late final String website;
+  late final String name;
   late final String email;
-  late final int phone;
-
+  late final String? emailVerifiedAt;
+  late final String role;
+  late final String city;
   late final String address;
-  late final int msgEmail;
-  late final String socialSiteLinks;
-  late final String emailVerifiedAt;
+  late final String mobile;
+  late final String phone;
+  late final String? avatar;
+  late final String gender;
+  late final String dob;
   late final String createdAt;
   late final String updatedAt;
-  late final int isVerify;
-  late final int package;
-  late final String subscriptionStatus;
-
-  late final String isActive;
-  late final String? imagePath;
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    companyName = json['company_name'];
-    avtar = json['avtar'];
-    coverImage = json['cover_image'];
-    website = json['website'];
     email = json['email'];
-    phone = json['phone'];
-
+    emailVerifiedAt = null;
+    role = json['role'];
+    city = json['city'];
     address = json['address'];
-    msgEmail = json['msg_email'];
-    socialSiteLinks = json['social_site_links'];
-    emailVerifiedAt = json['email_verified_at'];
+    mobile = json['mobile'];
+    phone = json['phone'];
+    avatar = null;
+    gender = json['gender'];
+    dob = json['dob'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    isVerify = json['is_verify'];
-    package = json['package'];
-    subscriptionStatus = json['subscription_status'];
-
-    isActive = json['is_active'];
-    imagePath = json['image_path'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['id'] = id;
     _data['name'] = name;
-    _data['first_name'] = firstName;
-    _data['last_name'] = lastName;
-    _data['company_name'] = companyName;
-    _data['avtar'] = avtar;
-    _data['cover_image'] = coverImage;
-    _data['website'] = website;
     _data['email'] = email;
-    _data['phone'] = phone;
-
-    _data['address'] = address;
-    _data['msg_email'] = msgEmail;
-    _data['social_site_links'] = socialSiteLinks;
     _data['email_verified_at'] = emailVerifiedAt;
+    _data['role'] = role;
+    _data['city'] = city;
+    _data['address'] = address;
+    _data['mobile'] = mobile;
+    _data['phone'] = phone;
+    _data['avatar'] = avatar;
+    _data['gender'] = gender;
+    _data['dob'] = dob;
     _data['created_at'] = createdAt;
     _data['updated_at'] = updatedAt;
-    _data['is_verify'] = isVerify;
-    _data['package'] = package;
-    _data['subscription_status'] = subscriptionStatus;
-
-    _data['is_active'] = isActive;
-    _data['image_path'] = imagePath;
     return _data;
   }
 }

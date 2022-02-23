@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:havest/Model/ParentCommodity.dart';
+import 'package:havest/Model/comodity.dart';
 import 'package:havest/Screens/FarmerDetails.dart';
-
+import 'package:havest/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddCrop extends StatefulWidget {
   const AddCrop({Key? key}) : super(key: key);
@@ -12,12 +15,65 @@ class AddCrop extends StatefulWidget {
   _AddCropState createState() => _AddCropState();
 }
 
-String dropdownValue = 'Select Commodity Type';
-String dropdownValue1 = 'Select Parent Commodity';
+var dropdownValue;
+var dropdownValue1;
 String dropdownValue2 = 'Select Commodity Variety';
+var farmerName;
+var farmerId;
+var farmerAadhar;
+List<Responsec> commodity = [];
+List<Responsep> parentcommodity = [];
 
 class _AddCropState extends State<AddCrop> {
   @override
+  _getfarmerData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      farmerName = sharedPreferences.getString("farmername");
+      farmerId = sharedPreferences.getString("farmerid");
+      farmerAadhar = sharedPreferences.getString("adharnumber");
+    });
+  }
+
+  ParentComodityResponse? parentcomoditylist;
+  _getparentCommodity() {
+    final service = ParentCommodityApiService();
+    service.getparentcommodity(1).then((data) async {
+      if (data.status == "success") {
+        setState(() {
+          parentcomoditylist = data;
+
+          parentcommodity = parentcomoditylist!.response;
+        });
+      } else {
+        print(data.status);
+      }
+    });
+  }
+
+  ComodityResponse? comoditylist;
+  _getComodity() {
+    final service = ComodityApiService();
+    service.getcommodity().then((data) async {
+      if (data.status == "success") {
+        setState(() {
+          comoditylist = data;
+
+          commodity = comoditylist!.response;
+        });
+      } else {
+        print(data.status);
+      }
+    });
+  }
+
+  void initState() {
+    _getfarmerData();
+    _getComodity();
+    // TODO: implement initState
+    super.initState();
+  }
+
   int selected = 0;
   String value = "";
   List<String> RadioList = ["RS 100", "RS 200", "RS 300"];
@@ -102,7 +158,7 @@ class _AddCropState extends State<AddCrop> {
                       "Farmer Name : ",
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
-                    Text("John Wayne")
+                    Text(farmerName)
                   ],
                 ),
               ),
@@ -115,7 +171,7 @@ class _AddCropState extends State<AddCrop> {
                       "Farmer ID : ",
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
-                    Text("1234566")
+                    Text(farmerId)
                   ],
                 ),
               ),
@@ -128,7 +184,7 @@ class _AddCropState extends State<AddCrop> {
                       "Aadhar Number : ",
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
-                    Text("12345678901")
+                    Text(farmerAadhar)
                   ],
                 ),
               ),
@@ -167,7 +223,8 @@ class _AddCropState extends State<AddCrop> {
               ),
               const SizedBox(height: 10),
               Container(
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField(
+                  hint: Text("Select Commodity Type"),
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 18, horizontal: 20),
@@ -177,38 +234,24 @@ class _AddCropState extends State<AddCrop> {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  dropdownColor: Colors.white,
                   value: dropdownValue,
-                  icon: const Icon(Icons.arrow_drop_down_outlined),
-                  elevation: 16,
-                  onChanged: (String? newValue) {
+                  items: commodity.map((e) {
+                    print(e);
+                    return DropdownMenuItem(
+                        value: e.id, child: Text(e.commodityName));
+                  }).toList(),
+                  onChanged: (value) {
                     setState(() {
-                      dropdownValue = newValue!;
+                      dropdownValue = value;
+                      _getparentCommodity();
                     });
                   },
-                  items: <String>[
-                    'Select Commodity Type',
-                    'Orange',
-                    'Mango',
-                    'Apple',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 1.1,
-                            fontSize: 14),
-                      ),
-                    );
-                  }).toList(),
                 ),
               ),
               const SizedBox(height: 10),
               Container(
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField(
+                  hint: Text("Select Mondal"),
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 18, horizontal: 20),
@@ -218,32 +261,16 @@ class _AddCropState extends State<AddCrop> {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  dropdownColor: Colors.white,
                   value: dropdownValue1,
-                  icon: const Icon(Icons.arrow_drop_down_outlined),
-                  elevation: 16,
-                  onChanged: (String? newValue1) {
+                  items: parentcommodity.map((e) {
+                    return DropdownMenuItem(value: e.id, child: Text(e.pcName));
+                  }).toList(),
+                  onChanged: (value) {
                     setState(() {
-                      dropdownValue1 = newValue1!;
+                      dropdownValue1 = value;
+                      // _getvillage();
                     });
                   },
-                  items: <String>[
-                    'Select Parent Commodity',
-                    'Apple',
-                    'Orange',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            color: Colors.black,
-                            letterSpacing: 1.1,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
-                    );
-                  }).toList(),
                 ),
               ),
               const SizedBox(height: 10),

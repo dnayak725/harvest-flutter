@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:havest/Model/FarmerList.dart';
 import 'package:havest/Screens/AddFarmer.dart';
+import 'package:havest/api_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,6 +15,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  FarmerListResponse? farmerlist;
+  _farmerList() {
+    final service = FarmerListApiService();
+    service.farmerlist().then((data) async {
+      if (data.status == "success") {
+        setState(() {
+          farmerlist = data;
+          print(farmerlist);
+        });
+      } else {
+        print(data.status);
+      }
+    });
+  }
+
+  void initState() {
+    _farmerList();
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,34 +144,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 "Farmer Name",
                 style: TextStyle(fontWeight: FontWeight.w600),
               ))),
-          Expanded(
-            child: ListView.builder(
-                physics: ScrollPhysics(),
-                itemCount: 20,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    margin: EdgeInsets.all(1),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: ListTile(
-                          leading: Text('${index + 1}'),
-                          trailing: Text(
-                            "124",
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600),
+          farmerlist != null
+              ? Expanded(
+                  child: ListView.builder(
+                      physics: ScrollPhysics(),
+                      itemCount: farmerlist!.response.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          margin: EdgeInsets.all(1),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: ListTile(
+                                leading: Text('${index + 1}'),
+                                trailing: Text(
+                                  farmerlist!.response[index].id.toString(),
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                title: Center(
+                                  child: Text(
+                                    farmerlist!.response[index].name,
+                                    style: TextStyle(color: Color(0xFF0A918A)),
+                                  ),
+                                )),
                           ),
-                          title: Center(
-                            child: Text(
-                              "Farmer Name",
-                              style: TextStyle(color: Color(0xFF0A918A)),
-                            ),
-                          )),
-                    ),
-                  );
-                }),
-          ),
+                        );
+                      }),
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  child: Text("No data found"),
+                )
         ],
       ),
       bottomNavigationBar: GestureDetector(
