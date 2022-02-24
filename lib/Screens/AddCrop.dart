@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:havest/Model/CommodityVariety.dart';
 import 'package:havest/Model/ParentCommodity.dart';
 import 'package:havest/Model/comodity.dart';
 import 'package:havest/Screens/FarmerDetails.dart';
@@ -17,15 +18,46 @@ class AddCrop extends StatefulWidget {
 
 var dropdownValue;
 var dropdownValue1;
-String dropdownValue2 = 'Select Commodity Variety';
+var dropdownValue2;
 var farmerName;
 var farmerId;
 var farmerAadhar;
 List<Responsec> commodity = [];
 List<Responsep> parentcommodity = [];
+List<Response> commodityvariety = [];
+final phoneController = TextEditingController();
+final quantityController = TextEditingController();
 
 class _AddCropState extends State<AddCrop> {
   @override
+  _addcorpdata() async {
+    final service = AddCorpApiService();
+    service.addcorpdata({
+      "farmer_id": '15',
+      "aadhar_number": "152485",
+      "commodity_id": '1',
+      "parent_commodity_id": '1',
+      "product_id": '1',
+      "price_id": '1',
+      "product_quantity": "15"
+    }).then(
+      (value) async {
+        if (value.status == "success") {
+          print(value.response);
+          print(value.message);
+
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => AddCrop(), fullscreenDialog: true));
+        } else {
+          _scaffoldKey.currentState!
+              .showSnackBar(SnackBar(content: Text(value.message)));
+        }
+      },
+    );
+  }
+
   _getfarmerData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
@@ -38,12 +70,31 @@ class _AddCropState extends State<AddCrop> {
   ParentComodityResponse? parentcomoditylist;
   _getparentCommodity() {
     final service = ParentCommodityApiService();
-    service.getparentcommodity(1).then((data) async {
+    service.getparentcommodity(dropdownValue).then((data) async {
       if (data.status == "success") {
         setState(() {
           parentcomoditylist = data;
 
           parentcommodity = parentcomoditylist!.response;
+        });
+      } else {
+        print(data.status);
+      }
+    });
+  }
+
+  CommodityVarietyResponse? comodityvarietylist;
+  _commodityVariety() {
+    final service = CommodityVarietyApiService();
+    service.commodityvariety({
+      "parent_commodity_id": dropdownValue1.toString(),
+      "commodity_id": dropdownValue.toString()
+    }).then((data) async {
+      if (data.status == "success") {
+        setState(() {
+          comodityvarietylist = data;
+
+          commodityvariety = comodityvarietylist!.response;
         });
       } else {
         print(data.status);
@@ -104,9 +155,11 @@ class _AddCropState extends State<AddCrop> {
         ));
   }
 
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   Widget build(BuildContext context) {
     print(value);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xFFE1E4E8),
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
@@ -190,6 +243,7 @@ class _AddCropState extends State<AddCrop> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                controller: phoneController,
                 decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -243,15 +297,15 @@ class _AddCropState extends State<AddCrop> {
                   onChanged: (value) {
                     setState(() {
                       dropdownValue = value;
-                      _getparentCommodity();
                     });
+                    _getparentCommodity();
                   },
                 ),
               ),
               const SizedBox(height: 10),
               Container(
                 child: DropdownButtonFormField(
-                  hint: Text("Select Mondal"),
+                  hint: Text("Select Parent Commodity"),
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 18, horizontal: 20),
@@ -268,14 +322,15 @@ class _AddCropState extends State<AddCrop> {
                   onChanged: (value) {
                     setState(() {
                       dropdownValue1 = value;
-                      // _getvillage();
                     });
+                    _commodityVariety();
                   },
                 ),
               ),
               const SizedBox(height: 10),
               Container(
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField(
+                  hint: Text("Select Commodity Variety"),
                   decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 18, horizontal: 20),
@@ -285,32 +340,16 @@ class _AddCropState extends State<AddCrop> {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  dropdownColor: Colors.white,
                   value: dropdownValue2,
-                  icon: const Icon(Icons.arrow_drop_down_outlined),
-                  elevation: 16,
-                  onChanged: (String? newValue2) {
-                    setState(() {
-                      dropdownValue2 = newValue2!;
-                    });
-                  },
-                  items: <String>[
-                    'Select Commodity Variety',
-                    'Apple',
-                    'Orange',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            color: Colors.black,
-                            letterSpacing: 1.1,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
-                    );
+                  items: commodityvariety.map((e) {
+                    return DropdownMenuItem(value: e.id, child: Text(e.name));
                   }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      dropdownValue2 = value;
+                    });
+                    _commodityVariety();
+                  },
                 ),
               ),
               const SizedBox(height: 10),
@@ -328,6 +367,7 @@ class _AddCropState extends State<AddCrop> {
                 height: 10,
               ),
               TextFormField(
+                controller: quantityController,
                 decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -397,11 +437,7 @@ class _AddCropState extends State<AddCrop> {
                         //content padding inside button
                       ),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FarmerDetails(),
-                                fullscreenDialog: true));
+                        _addcorpdata();
                         // if (formGlobalKey.currentState!.validate()) {}
                       },
                       child: Text(
