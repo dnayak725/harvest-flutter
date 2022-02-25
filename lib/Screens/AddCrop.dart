@@ -6,6 +6,8 @@ import 'package:havest/Model/CommodityVariety.dart';
 import 'package:havest/Model/ParentCommodity.dart';
 import 'package:havest/Model/comodity.dart';
 import 'package:havest/Screens/FarmerDetails.dart';
+import 'package:havest/Screens/HomeScreen.dart';
+import 'package:havest/Screens/LoginScreen.dart';
 import 'package:havest/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,10 +24,12 @@ var dropdownValue2;
 var farmerName;
 var farmerId;
 var farmerAadhar;
+
+List<GetProductsWithPrice> price = [];
 List<Responsec> commodity = [];
 List<Responsep> parentcommodity = [];
 List<Response> commodityvariety = [];
-final phoneController = TextEditingController();
+// final phoneController = TextEditingController();
 final quantityController = TextEditingController();
 
 class _AddCropState extends State<AddCrop> {
@@ -33,26 +37,35 @@ class _AddCropState extends State<AddCrop> {
   _addcorpdata() async {
     final service = AddCorpApiService();
     service.addcorpdata({
-      "farmer_id": '15',
-      "aadhar_number": "152485",
-      "commodity_id": '1',
-      "parent_commodity_id": '1',
-      "product_id": '1',
-      "price_id": '1',
-      "product_quantity": "15"
+      "farmer_id": farmerId.toString(),
+      "aadhar_number": farmerAadhar.toString(),
+      // "phone_number": phoneController.text.toString(),
+      "commodity_id": dropdownValue.toString(),
+      "parent_commodity_id": dropdownValue1.toString(),
+      "product_id": dropdownValue2.toString(),
+      "price_id": PriceId.toString(),
+      "quantity": quantityController.text.toString()
     }).then(
       (value) async {
         if (value.status == "success") {
+          setState(() {
+            // phoneController.text = "";
+            quantityController.text = "";
+            commodity = [];
+            parentcommodity = [];
+            commodityvariety = [];
+            price = [];
+          });
           print(value.response);
           print(value.message);
 
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => AddCrop(), fullscreenDialog: true));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(), fullscreenDialog: true));
         } else {
           _scaffoldKey.currentState!
-              .showSnackBar(SnackBar(content: Text(value.message)));
+              .showSnackBar(SnackBar(content: Text("something went wrong")));
         }
       },
     );
@@ -102,6 +115,37 @@ class _AddCropState extends State<AddCrop> {
     });
   }
 
+  _commodityPriceVariety() {
+    final service = CommodityVarietyApiService();
+    service.commodityvariety({
+      "parent_commodity_id": dropdownValue1.toString(),
+      "commodity_id": dropdownValue.toString()
+    }).then((data) async {
+      if (data.status == "success") {
+        setState(() {
+          comodityvarietylist = data;
+
+          commodityvariety = comodityvarietylist!.response;
+          print(commodityvariety);
+          price.clear();
+          commodityvariety.forEach((element) {
+            element.getProductsWithPrice.forEach((element2) {
+              if (dropdownValue2 == element2.productId) {
+                print(element.id);
+                price.add(element2);
+              }
+            });
+          });
+
+          RadioList = price;
+          PriceId = RadioList[0].id;
+        });
+      } else {
+        print(data.status);
+      }
+    });
+  }
+
   ComodityResponse? comoditylist;
   _getComodity() {
     final service = ComodityApiService();
@@ -127,13 +171,15 @@ class _AddCropState extends State<AddCrop> {
 
   int selected = 0;
   String value = "";
-  List<String> RadioList = ["RS 100", "RS 200", "RS 300"];
-  Widget customradio(String text, int index) {
+  int PriceId = 0;
+  List<GetProductsWithPrice> RadioList = [];
+  Widget customradio(String text, int index, int priceValue) {
     return GestureDetector(
         onTap: () {
           setState(() {
             selected = index;
             value = text;
+            PriceId = priceValue;
           });
         },
         child: Padding(
@@ -146,7 +192,7 @@ class _AddCropState extends State<AddCrop> {
             width: 80,
             alignment: Alignment.center,
             child: Text(
-              text,
+              text.toString(),
               style: TextStyle(
                 color: (selected == index) ? Colors.white : Colors.black,
               ),
@@ -157,18 +203,34 @@ class _AddCropState extends State<AddCrop> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   Widget build(BuildContext context) {
-    print(value);
+    print("hii");
+    print(RadioList.length);
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFE1E4E8),
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
         actions: [
-          Icon(FontAwesomeIcons.bell),
+          // Icon(FontAwesomeIcons.bell),
           // ignore: prefer_const_constructors
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 10),
-            child: Icon(FontAwesomeIcons.powerOff),
+            child: GestureDetector(
+                onTap: () async {
+                  {
+                    {
+                      SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.remove("userstatus");
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    }
+                  }
+                },
+                child: Icon(FontAwesomeIcons.powerOff)),
           ),
         ],
         title: Padding(
@@ -242,40 +304,40 @@ class _AddCropState extends State<AddCrop> {
                 ),
               ),
               const SizedBox(height: 10),
-              TextFormField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  label: Row(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                            text: 'Enter Phone Number',
-                            style: TextStyle(
-                                letterSpacing: 1.1,
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              TextSpan(
-                                  text: '*',
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold))
-                            ]),
-                      ),
-                    ],
-                  ),
-                  border: borderStyle(),
-                  enabledBorder: borderStyle(),
-                  focusedBorder: borderStyle(),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
+              // TextFormField(
+              //   controller: phoneController,
+              //   decoration: InputDecoration(
+              //     contentPadding:
+              //         EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              //     label: Row(
+              //       children: [
+              //         RichText(
+              //           text: TextSpan(
+              //               text: 'Enter Phone Number',
+              //               style: TextStyle(
+              //                   letterSpacing: 1.1,
+              //                   color: Colors.black,
+              //                   fontSize: 14,
+              //                   fontWeight: FontWeight.w400),
+              //               // ignore: prefer_const_literals_to_create_immutables
+              //               children: [
+              //                 TextSpan(
+              //                     text: '*',
+              //                     style: TextStyle(
+              //                         color: Colors.red,
+              //                         fontWeight: FontWeight.bold))
+              //               ]),
+              //         ),
+              //       ],
+              //     ),
+              //     border: borderStyle(),
+              //     enabledBorder: borderStyle(),
+              //     focusedBorder: borderStyle(),
+              //     filled: true,
+              //     fillColor: Colors.white,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
               Container(
                 child: DropdownButtonFormField(
                   hint: Text("Select Commodity Type"),
@@ -347,22 +409,27 @@ class _AddCropState extends State<AddCrop> {
                   onChanged: (value) {
                     setState(() {
                       dropdownValue2 = value;
+                      _commodityPriceVariety();
                     });
-                    _commodityVariety();
                   },
                 ),
               ),
               const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                height: 68,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return customradio(RadioList[index], index);
-                    }),
-              ),
+              price.length != 0
+                  ? SizedBox(
+                      width: double.infinity,
+                      height: 68,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: RadioList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return customradio(
+                                RadioList[index].price.toString(),
+                                index,
+                                RadioList[index].id);
+                          }),
+                    )
+                  : Container(),
               SizedBox(
                 height: 10,
               ),

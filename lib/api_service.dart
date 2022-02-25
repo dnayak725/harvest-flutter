@@ -6,6 +6,7 @@ import 'package:havest/Model/FarmerList.dart';
 import 'package:havest/Model/GetDistrict.dart';
 import 'package:havest/Model/GetMondal.dart';
 import 'package:havest/Model/GetVillage.dart';
+import 'package:havest/Model/HistoryCorpData.dart';
 import 'package:havest/Model/LoginModel.dart';
 import 'package:havest/Model/ParentCommodity.dart';
 import 'package:havest/Model/comodity.dart';
@@ -230,10 +231,32 @@ class AddCorpApiService {
 
     final data = jsonDecode(response.body);
     print(response.statusCode);
+
     if (response.statusCode == 200) {
       return AddCorpResponse.fromJson(data);
     } else {
+      print(data.toString());
       return AddCorpResponse.fromError(data);
+    }
+  }
+}
+
+// get district
+
+class CorpHistoryService {
+  Future<HistoryCorpResponse> corphistory() async {
+    String url = "https://ahdap.quocent.com/api/crop/details";
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {"API-KEY": "AIzaSyDcwzB-olAQNHSPh8FazQjYlTm6G40PwJQDretrHy"},
+    );
+
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return HistoryCorpResponse.fromJson(data);
+    } else {
+      return HistoryCorpResponse.fromError(data);
     }
   }
 }

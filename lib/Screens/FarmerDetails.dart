@@ -2,9 +2,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:havest/Model/farmerAdd.dart';
+import 'package:havest/Screens/AddCrop.dart';
+import 'package:havest/Screens/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FarmerDetails extends StatefulWidget {
-  const FarmerDetails({Key? key}) : super(key: key);
+  final String fName;
+  final String id;
+  final String adhaar;
+  final String phoneNumber;
+  final String pinCode;
+  const FarmerDetails(
+      this.id, this.fName, this.adhaar, this.phoneNumber, this.pinCode);
 
   @override
   _FarmerDetailsState createState() => _FarmerDetailsState();
@@ -12,6 +22,18 @@ class FarmerDetails extends StatefulWidget {
 
 class _FarmerDetailsState extends State<FarmerDetails> {
   @override
+  _addCorp() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    sharedPreferences.setString("farmername", widget.fName);
+    sharedPreferences.setString("adharnumber", widget.adhaar);
+    sharedPreferences.setString("farmerid", widget.id);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddCrop(), fullscreenDialog: true));
+  }
+
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,10 +41,25 @@ class _FarmerDetailsState extends State<FarmerDetails> {
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
         actions: [
-          Icon(FontAwesomeIcons.bell),
+          // Icon(FontAwesomeIcons.bell),
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 10),
-            child: Icon(FontAwesomeIcons.powerOff),
+            child: GestureDetector(
+                onTap: () async {
+                  {
+                    {
+                      SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.remove("userstatus");
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    }
+                  }
+                },
+                child: Icon(FontAwesomeIcons.powerOff)),
           ),
         ],
         title: Padding(
@@ -61,11 +98,11 @@ class _FarmerDetailsState extends State<FarmerDetails> {
               padding: const EdgeInsets.all(5),
               child: ListTile(
                 leading: Text(
-                  'Farmer Name',
+                  'ID',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 trailing: Text(
-                  "John amin",
+                  widget.id,
                 ),
               ),
             ),
@@ -81,12 +118,100 @@ class _FarmerDetailsState extends State<FarmerDetails> {
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 trailing: Text(
-                  "John amin",
+                  widget.fName,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 0,
+            margin: EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: ListTile(
+                leading: Text(
+                  'Aadhaar No',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: Text(
+                  widget.adhaar,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 0,
+            margin: EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: ListTile(
+                leading: Text(
+                  'Phone No',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: Text(
+                  widget.phoneNumber,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 0,
+            margin: EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: ListTile(
+                leading: Text(
+                  'Pin Code',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: Text(
+                  widget.pinCode,
                 ),
               ),
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: GestureDetector(
+        child: Card(
+          elevation: 20,
+          margin: EdgeInsets.zero,
+          child: Container(
+            height: 70,
+            width: 225,
+            child: Center(
+              child: SizedBox(
+                height: 50,
+                width: 192,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFF6ED097),
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    onPressed: () {
+                      _addCorp();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        Icon(FontAwesomeIcons.plusCircle),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Add Corp Data",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

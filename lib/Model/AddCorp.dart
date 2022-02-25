@@ -15,8 +15,6 @@ class AddCorpResponse {
   }
   AddCorpResponse.fromError(Map<String, dynamic> json) {
     status = json['status'];
-
-    message = json['message'];
   }
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
@@ -46,7 +44,7 @@ class Response {
   late final String parentCommodityId;
   late final String productId;
   late final String priceId;
-  late final Null productQuantity;
+  late final String? productQuantity;
   late final String updatedAt;
   late final String createdAt;
   late final int id;
@@ -58,7 +56,7 @@ class Response {
     parentCommodityId = json['parent_commodity_id'];
     productId = json['product_id'];
     priceId = json['price_id'];
-    productQuantity = null;
+    productQuantity = json['product_quantity'];
     updatedAt = json['updated_at'];
     createdAt = json['created_at'];
     id = json['id'];

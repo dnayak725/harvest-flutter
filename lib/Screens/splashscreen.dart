@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:havest/Screens/HomeScreen.dart';
 import 'dart:io';
 import 'dart:async';
 
 import 'package:havest/Screens/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
+
+late String finalStatus = "null";
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
@@ -15,12 +19,22 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     getValidationData().whenComplete(() async => Timer(
           Duration(seconds: 3),
-          () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen())),
+          finalStatus != 'null'
+              ? () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()))
+              : () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginScreen())),
         ));
   }
 
-  Future getValidationData() async {}
+  Future getValidationData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var obtainStatus = sharedPreferences.getString("userstatus");
+    print(obtainStatus);
+    setState(() {
+      finalStatus = obtainStatus!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -52,12 +52,14 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Color(0xFFE1E4E8),
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
-
+        automaticallyImplyLeading: false,
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: Image.asset(
-            "assets/images/logo.png",
-            width: 180,
+          child: Center(
+            child: Image.asset(
+              "assets/images/logo.png",
+              width: 180,
+            ),
           ),
         ),
         flexibleSpace: Container(
@@ -69,7 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      drawer: Drawer(),
       key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Container(

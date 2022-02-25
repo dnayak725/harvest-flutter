@@ -38,18 +38,18 @@ class Response {
     required this.createdAt,
     required this.updatedAt,
   });
-  late final int id;
-  late final String name;
-  late final String aadharNumber;
-  late final String phoneNumber;
-  late final int pinCode;
-  late final int districtId;
-  late final int mandalId;
-  late final int villageId;
-  late final int parliamentConstituencyId;
-  late final int assemblyConstituencyId;
-  late final String createdAt;
-  late final String updatedAt;
+  late final id;
+  late final name;
+  late final aadharNumber;
+  late final phoneNumber;
+  late final pinCode;
+  late final districtId;
+  late final mandalId;
+  late final villageId;
+  late final parliamentConstituencyId;
+  late final assemblyConstituencyId;
+  late final createdAt;
+  late final updatedAt;
 
   Response.fromJson(Map<String, dynamic> json) {
     id = json['id'];

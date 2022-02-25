@@ -6,9 +6,9 @@ import 'package:havest/Model/GetDistrict.dart';
 import 'package:havest/Model/GetMondal.dart';
 import 'package:havest/Model/GetVillage.dart';
 import 'package:havest/Screens/AddCrop.dart';
+import 'package:havest/Screens/LoginScreen.dart';
 import 'package:havest/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class Addfarmer extends StatefulWidget {
   const Addfarmer({Key? key}) : super(key: key);
@@ -47,6 +47,15 @@ class _AddfarmerState extends State<Addfarmer> {
     }).then(
       (value) async {
         if (value.status == "success") {
+          setState(() {
+            phoneController.text = "";
+            nameController.text = "";
+            aadharController.text = "";
+            pincodeController.text = "";
+            dist = [];
+            mondal = [];
+          });
+
           print(value.response);
           SharedPreferences sharedPreferences =
               await SharedPreferences.getInstance();
@@ -131,11 +140,26 @@ class _AddfarmerState extends State<Addfarmer> {
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
         actions: [
-          Icon(FontAwesomeIcons.bell),
+          // Icon(FontAwesomeIcons.bell),
           // ignore: prefer_const_constructors
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 10),
-            child: Icon(FontAwesomeIcons.powerOff),
+            child: GestureDetector(
+                onTap: () async {
+                  {
+                    {
+                      SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.remove("userstatus");
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    }
+                  }
+                },
+                child: Icon(FontAwesomeIcons.powerOff)),
           ),
         ],
         title: Padding(

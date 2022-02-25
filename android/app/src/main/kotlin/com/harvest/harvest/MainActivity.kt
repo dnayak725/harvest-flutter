@@ -1,4 +1,4 @@
-package com.harvest.haevest
+package com.harvest.harvest
 
 import io.flutter.embedding.android.FlutterActivity
 

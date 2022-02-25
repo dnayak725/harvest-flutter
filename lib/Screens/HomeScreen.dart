@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:havest/Model/FarmerList.dart';
 import 'package:havest/Screens/AddFarmer.dart';
+import 'package:havest/Screens/FarmerDetails.dart';
+import 'package:havest/Screens/Historydata.dart';
+import 'package:havest/Screens/LoginScreen.dart';
 import 'package:havest/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -43,10 +47,32 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
         actions: [
-          Icon(FontAwesomeIcons.bell),
+          // Icon(FontAwesomeIcons.list),
+          IconButton(
+            icon: const Icon(Icons.list_alt),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CropsHistory()));
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 10),
-            child: Icon(FontAwesomeIcons.powerOff),
+            child: GestureDetector(
+                onTap: () async {
+                  {
+                    {
+                      SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.remove("userstatus");
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    }
+                  }
+                },
+                child: Icon(FontAwesomeIcons.powerOff)),
           ),
         ],
         title: Padding(
@@ -150,25 +176,47 @@ class _HomeScreenState extends State<HomeScreen> {
                       physics: ScrollPhysics(),
                       itemCount: farmerlist!.response.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          margin: EdgeInsets.all(1),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: ListTile(
-                                leading: Text('${index + 1}'),
-                                trailing: Text(
-                                  farmerlist!.response[index].id.toString(),
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                title: Center(
-                                  child: Text(
-                                    farmerlist!.response[index].name,
-                                    style: TextStyle(color: Color(0xFF0A918A)),
+                        return GestureDetector(
+                          onTap: () {
+                            // print('hrllo world');
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FarmerDetails(
+                                          farmerlist!.response[index].id
+                                              .toString(),
+                                          farmerlist!.response[index].name,
+                                          farmerlist!
+                                              .response[index].aadharNumber
+                                              .toString(),
+                                          farmerlist!
+                                              .response[index].phoneNumber
+                                              .toString(),
+                                          farmerlist!.response[index].pinCode
+                                              .toString(),
+                                        )));
+                          },
+                          child: Card(
+                            margin: EdgeInsets.all(1),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ListTile(
+                                  leading: Text('${index + 1}'),
+                                  trailing: Text(
+                                    farmerlist!.response[index].id.toString(),
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600),
                                   ),
-                                )),
+                                  title: Center(
+                                    child: Text(
+                                      farmerlist!.response[index].name,
+                                      style:
+                                          TextStyle(color: Color(0xFF0A918A)),
+                                    ),
+                                  )),
+                            ),
                           ),
                         );
                       }),
