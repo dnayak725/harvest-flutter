@@ -31,6 +31,7 @@ List<Responsep> parentcommodity = [];
 List<Response> commodityvariety = [];
 // final phoneController = TextEditingController();
 final quantityController = TextEditingController();
+final formGlobalKey = GlobalKey<FormState>();
 
 class _AddCropState extends State<AddCrop> {
   @override
@@ -252,271 +253,306 @@ class _AddCropState extends State<AddCrop> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Add Corp Data",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, top: 10),
-                child: Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Text(
-                      "Farmer Name : ",
-                      style: TextStyle(fontWeight: FontWeight.w500),
+          child: Form(
+            key: formGlobalKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Add Corp Data",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    Text(farmerName)
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                child: Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Text(
-                      "Farmer ID : ",
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    Text(farmerId)
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Text(
-                      "Aadhar Number : ",
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    Text(farmerAadhar)
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              // TextFormField(
-              //   controller: phoneController,
-              //   decoration: InputDecoration(
-              //     contentPadding:
-              //         EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              //     label: Row(
-              //       children: [
-              //         RichText(
-              //           text: TextSpan(
-              //               text: 'Enter Phone Number',
-              //               style: TextStyle(
-              //                   letterSpacing: 1.1,
-              //                   color: Colors.black,
-              //                   fontSize: 14,
-              //                   fontWeight: FontWeight.w400),
-              //               // ignore: prefer_const_literals_to_create_immutables
-              //               children: [
-              //                 TextSpan(
-              //                     text: '*',
-              //                     style: TextStyle(
-              //                         color: Colors.red,
-              //                         fontWeight: FontWeight.bold))
-              //               ]),
-              //         ),
-              //       ],
-              //     ),
-              //     border: borderStyle(),
-              //     enabledBorder: borderStyle(),
-              //     focusedBorder: borderStyle(),
-              //     filled: true,
-              //     fillColor: Colors.white,
-              //   ),
-              // ),
-              // const SizedBox(height: 10),
-              Container(
-                child: DropdownButtonFormField(
-                  hint: Text("Select Commodity Type"),
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                    border: borderStyle(),
-                    enabledBorder: borderStyle(),
-                    focusedBorder: borderStyle(),
-                    filled: true,
-                    fillColor: Colors.white,
                   ),
-                  value: dropdownValue,
-                  items: commodity.map((e) {
-                    print(e);
-                    return DropdownMenuItem(
-                        value: e.id, child: Text(e.commodityName));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      dropdownValue = value;
-                    });
-                    _getparentCommodity();
-                  },
                 ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                child: DropdownButtonFormField(
-                  hint: Text("Select Parent Commodity"),
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                    border: borderStyle(),
-                    enabledBorder: borderStyle(),
-                    focusedBorder: borderStyle(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  value: dropdownValue1,
-                  items: parentcommodity.map((e) {
-                    return DropdownMenuItem(value: e.id, child: Text(e.pcName));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      dropdownValue1 = value;
-                    });
-                    _commodityVariety();
-                  },
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                child: DropdownButtonFormField(
-                  hint: Text("Select Commodity Variety"),
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                    border: borderStyle(),
-                    enabledBorder: borderStyle(),
-                    focusedBorder: borderStyle(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  value: dropdownValue2,
-                  items: commodityvariety.map((e) {
-                    return DropdownMenuItem(value: e.id, child: Text(e.name));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      dropdownValue2 = value;
-                      _commodityPriceVariety();
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 10),
-              price.length != 0
-                  ? SizedBox(
-                      width: double.infinity,
-                      height: 68,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: RadioList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return customradio(
-                                RadioList[index].price.toString(),
-                                index,
-                                RadioList[index].id);
-                          }),
-                    )
-                  : Container(),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: quantityController,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  label: Row(
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 10),
+                  child: Row(
+                    // ignore: prefer_const_literals_to_create_immutables
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          text: 'Enter Quantity',
-                          style: TextStyle(
-                              letterSpacing: 1.1,
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
-                          // ignore: prefer_const_literals_to_create_immutables
-                        ),
+                      Text(
+                        "Farmer Name : ",
+                        style: TextStyle(fontWeight: FontWeight.w500),
                       ),
+                      Text(farmerName)
                     ],
                   ),
-                  border: borderStyle(),
-                  enabledBorder: borderStyle(),
-                  focusedBorder: borderStyle(),
-                  filled: true,
-                  fillColor: Colors.white,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 4),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: RichText(
-                    text: TextSpan(
-                        text: '*',
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
+                  child: Row(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      Text(
+                        "Farmer ID : ",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      Text(farmerId)
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      Text(
+                        "Aadhar Number : ",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      Text(farmerAadhar)
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                // TextFormField(
+                //   controller: phoneController,
+                //   decoration: InputDecoration(
+                //     contentPadding:
+                //         EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                //     label: Row(
+                //       children: [
+                //         RichText(
+                //           text: TextSpan(
+                //               text: 'Enter Phone Number',
+                //               style: TextStyle(
+                //                   letterSpacing: 1.1,
+                //                   color: Colors.black,
+                //                   fontSize: 14,
+                //                   fontWeight: FontWeight.w400),
+                //               // ignore: prefer_const_literals_to_create_immutables
+                //               children: [
+                //                 TextSpan(
+                //                     text: '*',
+                //                     style: TextStyle(
+                //                         color: Colors.red,
+                //                         fontWeight: FontWeight.bold))
+                //               ]),
+                //         ),
+                //       ],
+                //     ),
+                //     border: borderStyle(),
+                //     enabledBorder: borderStyle(),
+                //     focusedBorder: borderStyle(),
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //   ),
+                // ),
+                // const SizedBox(height: 10),
+                Container(
+                  child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'plese select Commodity Type';
+                      }
+                      return null;
+                    },
+                    hint: Text("Select Commodity Type"),
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                      border: borderStyle(),
+                      enabledBorder: borderStyle(),
+                      focusedBorder: borderStyle(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    value: dropdownValue,
+                    items: commodity.map((e) {
+                      print(e);
+                      return DropdownMenuItem(
+                          value: e.id, child: Text(e.commodityName));
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue = value;
+                      });
+                      _getparentCommodity();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'plese select Parent Commodity';
+                      }
+                      return null;
+                    },
+                    hint: Text("Select Parent Commodity"),
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                      border: borderStyle(),
+                      enabledBorder: borderStyle(),
+                      focusedBorder: borderStyle(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    value: dropdownValue1,
+                    items: parentcommodity.map((e) {
+                      return DropdownMenuItem(
+                          value: e.id, child: Text(e.pcName));
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue1 = value;
+                      });
+                      _commodityVariety();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'plese select Commodity Variety';
+                      }
+                      return null;
+                    },
+                    hint: Text("Select Commodity Variety"),
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                      border: borderStyle(),
+                      enabledBorder: borderStyle(),
+                      focusedBorder: borderStyle(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    value: dropdownValue2,
+                    items: commodityvariety.map((e) {
+                      return DropdownMenuItem(value: e.id, child: Text(e.name));
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue2 = value;
+                        _commodityPriceVariety();
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                price.length != 0
+                    ? SizedBox(
+                        width: double.infinity,
+                        height: 68,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: RadioList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return customradio(
+                                  RadioList[index].price.toString(),
+                                  index,
+                                  RadioList[index].id);
+                            }),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 10,
+                ),
 
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          TextSpan(
-                            text: 'UOM is Quintal',
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: quantityController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'plese enter quantity';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    label: Row(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Enter Quantity',
                             style: TextStyle(
                                 letterSpacing: 1.1,
                                 color: Colors.black,
-                                fontSize: 13,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w400),
-                          )
-                        ]),
+                            // ignore: prefer_const_literals_to_create_immutables
+                          ),
+                        ),
+                      ],
+                    ),
+                    border: borderStyle(),
+                    enabledBorder: borderStyle(),
+                    focusedBorder: borderStyle(),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: SizedBox(
-                  height: 62, //height of button
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        // ignore: prefer_const_constructors
-                        primary: Color(0xFF0A918A), //background color of button
-                        //border width and color
-                        elevation: 3, //elevation of button
-                        shape: RoundedRectangleBorder(
-                            //to set border radius to button
-                            borderRadius: BorderRadius.circular(6.0)),
-                        //content padding inside button
-                      ),
-                      onPressed: () {
-                        _addcorpdata();
-                        // if (formGlobalKey.currentState!.validate()) {}
-                      },
-                      child: Text(
-                        "Submit",
-                        style: TextStyle(fontSize: 17),
-                      )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 4),
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: RichText(
+                      text: TextSpan(
+                          text: '*',
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
+
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            TextSpan(
+                              text: 'UOM is Quintal',
+                              style: TextStyle(
+                                  letterSpacing: 1.1,
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400),
+                            )
+                          ]),
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-            ],
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: SizedBox(
+                    height: 62, //height of button
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          // ignore: prefer_const_constructors
+                          primary:
+                              Color(0xFF0A918A), //background color of button
+                          //border width and color
+                          elevation: 3, //elevation of button
+                          shape: RoundedRectangleBorder(
+                              //to set border radius to button
+                              borderRadius: BorderRadius.circular(6.0)),
+                          //content padding inside button
+                        ),
+                        onPressed: () {
+                          if (formGlobalKey.currentState!.validate()) {
+                            if (PriceId != 0) {
+                              _addcorpdata();
+                            }
+                          }
+                        },
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(fontSize: 17),
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),

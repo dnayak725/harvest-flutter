@@ -24,6 +24,7 @@ final nameController = TextEditingController();
 final aadharController = TextEditingController();
 final phoneController = TextEditingController();
 final pincodeController = TextEditingController();
+final formGlobalKey = GlobalKey<FormState>();
 var dropdownValue;
 var dropdownValue1;
 var dropdownValue2;
@@ -183,336 +184,400 @@ class _AddfarmerState extends State<Addfarmer> {
           ? SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Add Farmer's Details",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                child: Form(
+                  key: formGlobalKey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Add Farmer's Details",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        label: Row(
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                  text: 'Enter Farmer Name',
-                                  style: TextStyle(
-                                      letterSpacing: 1.1,
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                  // ignore: prefer_const_literals_to_create_immutables
-                                  children: [
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold))
-                                  ]),
-                            ),
-                          ],
-                        ),
-                        border: borderStyle(),
-                        enabledBorder: borderStyle(),
-                        focusedBorder: borderStyle(),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: aadharController,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        label: Row(
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                  text: 'Enter Aadhar Number',
-                                  style: TextStyle(
-                                      letterSpacing: 1.1,
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                  // ignore: prefer_const_literals_to_create_immutables
-                                  children: [
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold))
-                                  ]),
-                            ),
-                          ],
-                        ),
-                        border: borderStyle(),
-                        enabledBorder: borderStyle(),
-                        focusedBorder: borderStyle(),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: phoneController,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        label: Row(
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                  text: 'Enter Phone Number',
-                                  style: TextStyle(
-                                      letterSpacing: 1.1,
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400),
-                                  // ignore: prefer_const_literals_to_create_immutables
-                                  children: [
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold))
-                                  ]),
-                            ),
-                          ],
-                        ),
-                        border: borderStyle(),
-                        enabledBorder: borderStyle(),
-                        focusedBorder: borderStyle(),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: pincodeController,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        label: Row(
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                text: 'Enter Pincode',
-                                style: TextStyle(
-                                    letterSpacing: 1.1,
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400),
-                                // ignore: prefer_const_literals_to_create_immutables
-                              ),
-                            ),
-                          ],
-                        ),
-                        border: borderStyle(),
-                        enabledBorder: borderStyle(),
-                        focusedBorder: borderStyle(),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      child: DropdownButtonFormField(
-                        hint: Text("Select District"),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 18, horizontal: 20),
-                          border: borderStyle(),
-                          enabledBorder: borderStyle(),
-                          focusedBorder: borderStyle(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        value: dropdownValue,
-                        items: dist.map((e) {
-                          print(e);
-                          return DropdownMenuItem(
-                              value: e.id, child: Text(e.name));
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            dropdownValue = value;
-                            _getmondal();
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      child: DropdownButtonFormField(
-                        hint: Text("Select Mondal"),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 18, horizontal: 20),
-                          border: borderStyle(),
-                          enabledBorder: borderStyle(),
-                          focusedBorder: borderStyle(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        value: dropdownValue1,
-                        items: mondal.map((e) {
-                          return DropdownMenuItem(
-                              value: e.id, child: Text(e.name));
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            dropdownValue1 = value;
-                            // _getvillage();
-                          });
-                        },
-                      ),
-                    ),
-                    // const SizedBox(height: 10),
-                    // Container(
-                    //   child: DropdownButtonFormField(
-                    //     decoration: InputDecoration(
-                    //       contentPadding: EdgeInsets.symmetric(
-                    //           vertical: 18, horizontal: 20),
-                    //       border: borderStyle(),
-                    //       enabledBorder: borderStyle(),
-                    //       focusedBorder: borderStyle(),
-                    //       filled: true,
-                    //       fillColor: Colors.white,
-                    //     ),
-                    //     value: dropdownValue2,
-                    //     items: mondal.map((e) {
-                    //       return DropdownMenuItem(
-                    //           value: e.id, child: Text(e.name));
-                    //     }).toList(),
-                    //     onChanged: (value) {
-                    //       setState(() {
-                    //         dropdownValue2 = value;
-                    //       });
-                    //     },
-                    //   ),
-                    // ),
-                    const SizedBox(height: 10),
-                    Container(
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          border: borderStyle(),
-                          enabledBorder: borderStyle(),
-                          focusedBorder: borderStyle(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        dropdownColor: Colors.white,
-                        value: dropdownValue4,
-                        icon: const Icon(Icons.arrow_drop_down_outlined),
-                        elevation: 16,
-                        onChanged: (String? newValue4) {
-                          setState(() {
-                            dropdownValue4 = newValue4!;
-                          });
-                        },
-                        items: <String>[
-                          'Select Village',
-                          'village 1',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  letterSpacing: 1.1,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          border: borderStyle(),
-                          enabledBorder: borderStyle(),
-                          focusedBorder: borderStyle(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        dropdownColor: Colors.white,
-                        value: dropdownValue3,
-                        icon: const Icon(Icons.arrow_drop_down_outlined),
-                        elevation: 16,
-                        onChanged: (String? newValue3) {
-                          setState(() {
-                            dropdownValue3 = newValue3!;
-                          });
-                        },
-                        items: <String>[
-                          'Select Constituency',
-                          'Constituency 1',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  letterSpacing: 1.1,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: SizedBox(
-                        height: 62, //height of button
-                        width: double.infinity, //width of button
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              // ignore: prefer_const_constructors
-                              primary: Color(
-                                  0xFF0A918A), //background color of button
-                              //border width and color
-                              elevation: 3, //elevation of button
-                              shape: RoundedRectangleBorder(
-                                  //to set border radius to button
-                                  borderRadius: BorderRadius.circular(6.0)),
-                              //content padding inside button
-                            ),
-                            onPressed: () {
-                              _farmeradd();
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: nameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'plese enter famer name';
+                          }
 
-                              // if (formGlobalKey.currentState!.validate()) {}
-                            },
-                            child: Text(
-                              "Submit",
-                              style: TextStyle(fontSize: 17),
-                            )),
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          label: Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Enter Farmer Name',
+                                    style: TextStyle(
+                                        letterSpacing: 1.1,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
+                                    // ignore: prefer_const_literals_to_create_immutables
+                                    children: [
+                                      TextSpan(
+                                          text: '*',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          border: borderStyle(),
+                          enabledBorder: borderStyle(),
+                          focusedBorder: borderStyle(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: aadharController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'plese enter Aadhar number';
+                          } else if (value.length < 11) {
+                            return "Aadhar must be at least 11 Digits";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          label: Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Enter Aadhar Number',
+                                    style: TextStyle(
+                                        letterSpacing: 1.1,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
+                                    // ignore: prefer_const_literals_to_create_immutables
+                                    children: [
+                                      TextSpan(
+                                          text: '*',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          border: borderStyle(),
+                          enabledBorder: borderStyle(),
+                          focusedBorder: borderStyle(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'plese enter Phoner number';
+                          } else if (value.isNotEmpty) {
+                            //bool mobileValid = RegExp(r"^(?:\+88||01)?(?:\d{10}|\d{13})$").hasMatch(value);
+
+                            bool mobileValid =
+                                RegExp(r'(^[789]\d{9})').hasMatch(value);
+                            return mobileValid ? null : "Invalid mobile";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          label: Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Enter Phone Number',
+                                    style: TextStyle(
+                                        letterSpacing: 1.1,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
+                                    // ignore: prefer_const_literals_to_create_immutables
+                                    children: [
+                                      TextSpan(
+                                          text: '*',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          border: borderStyle(),
+                          enabledBorder: borderStyle(),
+                          focusedBorder: borderStyle(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: pincodeController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'plese enter Pincode';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          label: Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Enter Pincode',
+                                  style: TextStyle(
+                                      letterSpacing: 1.1,
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400),
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                ),
+                              ),
+                            ],
+                          ),
+                          border: borderStyle(),
+                          enabledBorder: borderStyle(),
+                          focusedBorder: borderStyle(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        child: DropdownButtonFormField(
+                          validator: (value) {
+                            if (value == null) {
+                              return 'plese select district';
+                            }
+                            return null;
+                          },
+                          hint: Text("Select District"),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 18, horizontal: 20),
+                            border: borderStyle(),
+                            enabledBorder: borderStyle(),
+                            focusedBorder: borderStyle(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          value: dropdownValue,
+                          items: dist.map((e) {
+                            print(e);
+                            return DropdownMenuItem(
+                                value: e.id, child: Text(e.name));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              dropdownValue = value;
+                              _getmondal();
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        child: DropdownButtonFormField(
+                          validator: (value) {
+                            if (value == null) {
+                              return 'plese select mondal';
+                            }
+                            return null;
+                          },
+                          hint: Text("Select Mondal"),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 18, horizontal: 20),
+                            border: borderStyle(),
+                            enabledBorder: borderStyle(),
+                            focusedBorder: borderStyle(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          value: dropdownValue1,
+                          items: mondal.map((e) {
+                            return DropdownMenuItem(
+                                value: e.id, child: Text(e.name));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              dropdownValue1 = value;
+                              // _getvillage();
+                            });
+                          },
+                        ),
+                      ),
+                      // const SizedBox(height: 10),
+                      // Container(
+                      //   child: DropdownButtonFormField(
+                      //     decoration: InputDecoration(
+                      //       contentPadding: EdgeInsets.symmetric(
+                      //           vertical: 18, horizontal: 20),
+                      //       border: borderStyle(),
+                      //       enabledBorder: borderStyle(),
+                      //       focusedBorder: borderStyle(),
+                      //       filled: true,
+                      //       fillColor: Colors.white,
+                      //     ),
+                      //     value: dropdownValue2,
+                      //     items: mondal.map((e) {
+                      //       return DropdownMenuItem(
+                      //           value: e.id, child: Text(e.name));
+                      //     }).toList(),
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         dropdownValue2 = value;
+                      //       });
+                      //     },
+                      //   ),
+                      // ),
+                      const SizedBox(height: 10),
+                      Container(
+                        child: DropdownButtonFormField<String>(
+                          validator: (value) {
+                            if (value == null) {
+                              return 'plese select village';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 20),
+                            border: borderStyle(),
+                            enabledBorder: borderStyle(),
+                            focusedBorder: borderStyle(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          dropdownColor: Colors.white,
+                          value: dropdownValue4,
+                          icon: const Icon(Icons.arrow_drop_down_outlined),
+                          elevation: 16,
+                          onChanged: (String? newValue4) {
+                            setState(() {
+                              dropdownValue4 = newValue4!;
+                            });
+                          },
+                          items: <String>[
+                            'Select Village',
+                            'village 1',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    letterSpacing: 1.1,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        child: DropdownButtonFormField<String>(
+                          validator: (value) {
+                            if (value == null) {
+                              return 'plese select Constituency';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 20),
+                            border: borderStyle(),
+                            enabledBorder: borderStyle(),
+                            focusedBorder: borderStyle(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          dropdownColor: Colors.white,
+                          value: dropdownValue3,
+                          icon: const Icon(Icons.arrow_drop_down_outlined),
+                          elevation: 16,
+                          onChanged: (String? newValue3) {
+                            setState(() {
+                              dropdownValue3 = newValue3!;
+                            });
+                          },
+                          items: <String>[
+                            'Select Constituency',
+                            'Constituency 1',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    letterSpacing: 1.1,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: SizedBox(
+                          height: 62, //height of button
+                          width: double.infinity, //width of button
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                // ignore: prefer_const_constructors
+                                primary: Color(
+                                    0xFF0A918A), //background color of button
+                                //border width and color
+                                elevation: 3, //elevation of button
+                                shape: RoundedRectangleBorder(
+                                    //to set border radius to button
+                                    borderRadius: BorderRadius.circular(6.0)),
+                                //content padding inside button
+                              ),
+                              onPressed: () {
+                                if (formGlobalKey.currentState!.validate()) {
+                                  _farmeradd();
+                                }
+                                // if (formGlobalKey.currentState!.validate()) {}
+                              },
+                              child: Text(
+                                "Submit",
+                                style: TextStyle(fontSize: 17),
+                              )),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
