@@ -4,7 +4,7 @@ class FarmerListResponse {
     required this.response,
   });
   late final String status;
-  late final List<Response> response;
+  late List<Response> response;
 
   FarmerListResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];

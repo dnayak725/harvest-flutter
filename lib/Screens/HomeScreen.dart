@@ -18,15 +18,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
   FarmerListResponse? farmerlist;
+  List<Response> _foundUsers = [];
+
   _farmerList() {
     final service = FarmerListApiService();
     service.farmerlist().then((data) async {
       if (data.status == "success") {
         setState(() {
           farmerlist = data;
-          print(farmerlist);
+          _foundUsers = farmerlist!.response;
         });
       } else {
         print(data.status);
@@ -34,11 +35,33 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  @override
   void initState() {
     _farmerList();
 
     // TODO: implement initState
     super.initState();
+  }
+
+// This function is called whenever the text field changes
+
+  void _runFilter(String enteredKeyword) {
+    List<Response> results = [];
+    if (enteredKeyword.isEmpty) {
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = farmerlist!.response;
+    } else {
+      results = farmerlist!.response
+          .where((user) =>
+              user.name.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+      // we use the toLowerCase() method to make it case-insensitive
+    }
+
+    // Refresh the UI
+    setState(() {
+      _foundUsers = results;
+    });
   }
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -140,7 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: Container(
                       child: TextFormField(
-                        // controller: searchController,
+                        onChanged: (value) => _runFilter(value),
+
                         // ignore: unnecessary_new
                         decoration: new InputDecoration(
                             border: InputBorder.none,
@@ -162,19 +186,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               trailing: Text(
-                "Farmer ID ",
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              title: Center(
-                  child: Text(
                 "Farmer Name",
                 style: TextStyle(fontWeight: FontWeight.w600),
-              ))),
+              )),
           farmerlist != null
               ? Expanded(
                   child: ListView.builder(
                       physics: ScrollPhysics(),
-                      itemCount: farmerlist!.response.length,
+                      itemCount: _foundUsers.length,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
                           onTap: () {
@@ -183,17 +202,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => FarmerDetails(
-                                          farmerlist!.response[index].id
+                                          _foundUsers[index].id.toString(),
+                                          _foundUsers[index].name,
+                                          _foundUsers[index]
+                                              .aadharNumber
                                               .toString(),
-                                          farmerlist!.response[index].name,
-                                          farmerlist!
-                                              .response[index].aadharNumber
+                                          _foundUsers[index]
+                                              .phoneNumber
                                               .toString(),
-                                          farmerlist!
-                                              .response[index].phoneNumber
-                                              .toString(),
-                                          farmerlist!.response[index].pinCode
-                                              .toString(),
+                                          _foundUsers[index].pinCode.toString(),
                                         )));
                           },
                           child: Card(
@@ -203,18 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: ListTile(
                                   leading: Text('${index + 1}'),
                                   trailing: Text(
-                                    farmerlist!.response[index].id.toString(),
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  title: Center(
-                                    child: Text(
-                                      farmerlist!.response[index].name,
-                                      style:
-                                          TextStyle(color: Color(0xFF0A918A)),
-                                    ),
+                                    _foundUsers[index].name,
+                                    style: TextStyle(color: Color(0xFF0A918A)),
                                   )),
                             ),
                           ),

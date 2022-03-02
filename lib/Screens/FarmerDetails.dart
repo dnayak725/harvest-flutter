@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:havest/Model/farmerAdd.dart';
 import 'package:havest/Screens/AddCrop.dart';
+import 'package:havest/Screens/AddLand.dart';
+import 'package:havest/Screens/LandDetails.dart';
 import 'package:havest/Screens/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,6 +34,18 @@ class _FarmerDetailsState extends State<FarmerDetails> {
         context,
         MaterialPageRoute(
             builder: (context) => AddCrop(), fullscreenDialog: true));
+  }
+
+  _addland() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    sharedPreferences.setString("farmername", widget.fName);
+    sharedPreferences.setString("adharnumber", widget.adhaar);
+    sharedPreferences.setString("farmerid", widget.id);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddLand(), fullscreenDialog: true));
   }
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -83,12 +97,60 @@ class _FarmerDetailsState extends State<FarmerDetails> {
         children: [
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Farmers Details",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Farmers Details",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Center(
+                  child: SizedBox(
+                    height: 35,
+                    width: 98,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF238A83),
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                        ),
+                        onPressed: () {
+                          // _addCorp();
+                        },
+                        child: Text(
+                          "Corp Details",
+                          style: TextStyle(fontSize: 10),
+                        )),
+                  ),
+                ),
+                Center(
+                  child: SizedBox(
+                    height: 35,
+                    width: 98,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF238A83),
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LandDetails()));
+                        },
+                        child: Text(
+                          "Land Details",
+                          style: TextStyle(fontSize: 10),
+                        )),
+                  ),
+                ),
+              ],
             ),
           ),
           Card(
@@ -179,36 +241,56 @@ class _FarmerDetailsState extends State<FarmerDetails> {
           margin: EdgeInsets.zero,
           child: Container(
             height: 70,
-            width: 225,
-            child: Center(
-              child: SizedBox(
-                height: 50,
-                width: 192,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF6ED097),
-                      elevation: 1,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    onPressed: () {
-                      _addCorp();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        Icon(FontAwesomeIcons.plusCircle),
-                        Padding(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Center(
+                  child: SizedBox(
+                    height: 50,
+                    width: 160,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF6ED097),
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
+                        ),
+                        onPressed: () {
+                          _addCorp();
+                        },
+                        child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Add Corp Data",
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 15),
                           ),
+                        )),
+                  ),
+                ),
+                Center(
+                  child: SizedBox(
+                    height: 50,
+                    width: 160,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF6ED097),
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
                         ),
-                      ],
-                    )),
-              ),
+                        onPressed: () {
+                          _addland();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Add Land Data",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        )),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

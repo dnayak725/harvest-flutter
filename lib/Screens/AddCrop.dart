@@ -29,6 +29,9 @@ List<GetProductsWithPrice> price = [];
 List<Responsec> commodity = [];
 List<Responsep> parentcommodity = [];
 List<Response> commodityvariety = [];
+String dropdownValue4 = 'Select khata number';
+String dropdownValue5 = 'Select survey number';
+
 // final phoneController = TextEditingController();
 final quantityController = TextEditingController();
 final formGlobalKey = GlobalKey<FormState>();
@@ -342,6 +345,97 @@ class _AddCropState extends State<AddCrop> {
                 //   ),
                 // ),
                 // const SizedBox(height: 10),
+
+                Container(
+                  child: DropdownButtonFormField<String>(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'plese select Khata number';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      border: borderStyle(),
+                      enabledBorder: borderStyle(),
+                      focusedBorder: borderStyle(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    dropdownColor: Colors.white,
+                    value: dropdownValue4,
+                    icon: const Icon(Icons.arrow_drop_down_outlined),
+                    elevation: 16,
+                    onChanged: (String? newValue4) {
+                      setState(() {
+                        dropdownValue4 = newValue4!;
+                      });
+                    },
+                    items: <String>[
+                      'Select khata number',
+                      'Khata',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              color: Colors.black,
+                              letterSpacing: 1.1,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  child: DropdownButtonFormField<String>(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'plese select survey number';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      border: borderStyle(),
+                      enabledBorder: borderStyle(),
+                      focusedBorder: borderStyle(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    dropdownColor: Colors.white,
+                    value: dropdownValue5,
+                    icon: const Icon(Icons.arrow_drop_down_outlined),
+                    elevation: 16,
+                    onChanged: (String? newValue5) {
+                      setState(() {
+                        dropdownValue5 = newValue5!;
+                      });
+                    },
+                    items: <String>[
+                      'Select survey number',
+                      'Khata',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                              color: Colors.black,
+                              letterSpacing: 1.1,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Container(
                   child: DropdownButtonFormField(
                     validator: (value) {
@@ -439,23 +533,23 @@ class _AddCropState extends State<AddCrop> {
                 ),
                 const SizedBox(height: 10),
                 price.length != 0
-                    ? SizedBox(
-                        width: double.infinity,
-                        height: 68,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: RadioList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return customradio(
-                                  RadioList[index].price.toString(),
-                                  index,
-                                  RadioList[index].id);
-                            }),
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 68,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: RadioList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return customradio(
+                                    RadioList[index].price.toString(),
+                                    index,
+                                    RadioList[index].id);
+                              }),
+                        ),
                       )
                     : Container(),
-                SizedBox(
-                  height: 10,
-                ),
 
                 TextFormField(
                   keyboardType: TextInputType.number,
@@ -505,6 +599,67 @@ class _AddCropState extends State<AddCrop> {
                           children: [
                             TextSpan(
                               text: 'UOM is Quintal',
+                              style: TextStyle(
+                                  letterSpacing: 1.1,
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400),
+                            )
+                          ]),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: quantityController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'plese enter Area';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    label: Row(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Enter Area',
+                            style: TextStyle(
+                                letterSpacing: 1.1,
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400),
+                            // ignore: prefer_const_literals_to_create_immutables
+                          ),
+                        ),
+                      ],
+                    ),
+                    border: borderStyle(),
+                    enabledBorder: borderStyle(),
+                    focusedBorder: borderStyle(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 4),
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: RichText(
+                      text: TextSpan(
+                          text: '*',
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
+
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            TextSpan(
+                              text: 'UOM is Acre',
                               style: TextStyle(
                                   letterSpacing: 1.1,
                                   color: Colors.black,

@@ -24,12 +24,13 @@ final nameController = TextEditingController();
 final aadharController = TextEditingController();
 final phoneController = TextEditingController();
 final pincodeController = TextEditingController();
+final coController = TextEditingController();
+
 final formGlobalKey = GlobalKey<FormState>();
 var dropdownValue;
 var dropdownValue1;
 var dropdownValue2;
 String dropdownValue4 = 'Select Village';
-String dropdownValue3 = 'Select Constituency';
 
 class _AddfarmerState extends State<Addfarmer> {
   @override
@@ -242,6 +243,47 @@ class _AddfarmerState extends State<Addfarmer> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        controller: coController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'plese enter c/o ';
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          label: Row(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Enter C/O',
+                                    style: TextStyle(
+                                        letterSpacing: 1.1,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
+                                    // ignore: prefer_const_literals_to_create_immutables
+                                    children: [
+                                      TextSpan(
+                                          text: '*',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          border: borderStyle(),
+                          enabledBorder: borderStyle(),
+                          focusedBorder: borderStyle(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
                         keyboardType: TextInputType.number,
                         controller: aadharController,
                         validator: (value) {
@@ -287,12 +329,11 @@ class _AddfarmerState extends State<Addfarmer> {
                       TextFormField(
                         controller: phoneController,
                         keyboardType: TextInputType.number,
+                        maxLength: 10,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'plese enter Phoner number';
                           } else if (value.isNotEmpty) {
-                            //bool mobileValid = RegExp(r"^(?:\+88||01)?(?:\d{10}|\d{13})$").hasMatch(value);
-
                             bool mobileValid =
                                 RegExp(r'(^[789]\d{9})').hasMatch(value);
                             return mobileValid ? null : "Invalid mobile";
@@ -300,6 +341,7 @@ class _AddfarmerState extends State<Addfarmer> {
                           return null;
                         },
                         decoration: InputDecoration(
+                          counterText: "",
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 20),
                           label: Row(
@@ -332,15 +374,21 @@ class _AddfarmerState extends State<Addfarmer> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        maxLength: 5,
                         controller: pincodeController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'plese enter Pincode';
+                          } else if (value.isNotEmpty) {
+                            bool mobileValid =
+                                RegExp(r'(^[5])').hasMatch(value);
+                            return mobileValid ? null : "Invalid pin";
                           }
                           return null;
                         },
                         decoration: InputDecoration(
+                          counterText: "",
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 20),
                           label: Row(
@@ -499,51 +547,7 @@ class _AddfarmerState extends State<Addfarmer> {
                           }).toList(),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Container(
-                        child: DropdownButtonFormField<String>(
-                          validator: (value) {
-                            if (value == null) {
-                              return 'plese select Constituency';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 20),
-                            border: borderStyle(),
-                            enabledBorder: borderStyle(),
-                            focusedBorder: borderStyle(),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          dropdownColor: Colors.white,
-                          value: dropdownValue3,
-                          icon: const Icon(Icons.arrow_drop_down_outlined),
-                          elevation: 16,
-                          onChanged: (String? newValue3) {
-                            setState(() {
-                              dropdownValue3 = newValue3!;
-                            });
-                          },
-                          items: <String>[
-                            'Select Constituency',
-                            'Constituency 1',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    letterSpacing: 1.1,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+
                       Padding(
                         padding: const EdgeInsets.only(top: 12),
                         child: SizedBox(
